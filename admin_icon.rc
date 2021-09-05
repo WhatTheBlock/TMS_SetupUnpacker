@@ -1,0 +1,4 @@
+    #include <windows.h>
+     
+    ID_ICON    ICON    DISCARDABLE    "maplestory.ico"
+	1 24 TMS_SetupUnpacker.exe.manifest
