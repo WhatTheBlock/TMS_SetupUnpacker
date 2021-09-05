@@ -68,7 +68,7 @@ void Widget::runCmd(QString cmd, bool startInstall) {
         [=](int exitCode, QProcess::ExitStatus exitStatus)
         {
             if(startInstall) {
-
+                ui->cmdOutput->clear();
             }
             else {
                 QString text = ui->cmdOutput->toPlainText();
@@ -87,15 +87,22 @@ void Widget::realTimeReadOut() {
     QProcess *p = dynamic_cast<QProcess *>(sender());
     QString temp_Output = QString::fromLocal8Bit(p->readAllStandardOutput());
     //QString temp_Error = QString::fromLocal8Bit(p->readAllStandardError());
-    qDebug() << temp_Output;
+    //qDebug() << temp_Output;
 
     ui->cmdOutput->append(temp_Output);
     //ui->cmdOutput->append(temp_Error);
 
     if(temp_Output.indexOf("#") != -1) {
-        QString temp = temp_Output.mid(temp_Output.indexOf("#") + 1, temp_Output.indexOf(" {") - 1);
-        ui->extracted->setText(temp);
-        ui->progress->setValue(temp.toInt());
+        if(temp_Output.indexOf("install_script.iss") != -1) {
+            ui->extracted->setText(ui->total->text());
+            ui->progress->setValue(ui->progress->maximum());
+        }
+        else {
+            QString temp = temp_Output.mid(temp_Output.indexOf("#") + 1, temp_Output.indexOf(" {") - 1);
+            ui->extracted->setText(temp);
+            ui->progress->setValue(temp.toInt());
+        }
+
     }
 }
 
