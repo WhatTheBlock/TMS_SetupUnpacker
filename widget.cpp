@@ -8,6 +8,8 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     ui->background->viewport()->setCursor(Qt::ArrowCursor); //設定TextEdit的鼠標為標準箭頭
     ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor); //設定TextEdit的鼠標為標準箭頭
 
+    isStart = false;
+
     QFile innounp(qApp->applicationDirPath() + "/innounp.exe");
     if(innounp.exists()) {
         innounpPath = innounp.fileName().replace("/","\\");
