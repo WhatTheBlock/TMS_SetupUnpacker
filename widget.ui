@@ -143,7 +143,7 @@
     <string>3. 設定遊戲安裝的路徑</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="setGameSetupPath">
+  <widget class="QPushButton" name="setGamePath">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -325,7 +325,7 @@
   <zorder>label_2</zorder>
   <zorder>setSetupPath</zorder>
   <zorder>label_3</zorder>
-  <zorder>setGameSetupPath</zorder>
+  <zorder>setGamePath</zorder>
   <zorder>start</zorder>
   <zorder>cmdOutput</zorder>
   <zorder>line</zorder>

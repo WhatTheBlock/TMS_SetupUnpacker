@@ -7,6 +7,8 @@
 #include <QProcess>
 #include <QTextCodec>
 #include <QDebug>
+#include <QFile>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -25,7 +27,7 @@ private slots:
 
     void on_setSetupPath_clicked();
 
-    void on_setGameSetupPath_clicked();
+    void on_setGamePath_clicked();
 
     void realTimeReadOut();
 
@@ -36,7 +38,7 @@ private:
 
     QString innounpPath;
     QString setupPath;
-    QString gameSetupPath;
+    QString gamePath;
 
     int files;
 

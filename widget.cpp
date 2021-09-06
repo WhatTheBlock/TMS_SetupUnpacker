@@ -42,12 +42,12 @@ void Widget::on_setSetupPath_clicked()
 }
 
 
-void Widget::on_setGameSetupPath_clicked()
+void Widget::on_setGamePath_clicked()
 {
-    gameSetupPath = QFileDialog::getExistingDirectory(this, QStringLiteral("選擇遊戲安裝的路徑"), "/", QFileDialog::ShowDirsOnly);
-    if(gameSetupPath != "") {
-        gameSetupPath = gameSetupPath.replace("/","\\");
-        ui->setGameSetupPath->setText(gameSetupPath);
+    gamePath = QFileDialog::getExistingDirectory(this, QStringLiteral("選擇遊戲安裝的路徑"), "/", QFileDialog::ShowDirsOnly);
+    if(gamePath != "") {
+        gamePath = gamePath.replace("/","\\") + "\\";
+        ui->setGamePath->setText(gamePath);
     }
     else {
 
@@ -69,6 +69,8 @@ void Widget::runCmd(QString cmd, bool startInstall) {
         {
             if(startInstall) {
                 ui->cmdOutput->clear();
+                //QDir *dir = new QDir(gamePath + "{tmp}");
+                //dir->removeRecursively();
             }
             else {
                 QString text = ui->cmdOutput->toPlainText();
@@ -77,6 +79,7 @@ void Widget::runCmd(QString cmd, bool startInstall) {
                 ui->total->setText(text);
                 ui->cmdOutput->clear();
                 ui->progress->setMaximum(text.toInt());
+
             }
         });
 
@@ -93,15 +96,9 @@ void Widget::realTimeReadOut() {
     //ui->cmdOutput->append(temp_Error);
 
     if(temp_Output.indexOf("#") != -1) {
-        if(temp_Output.indexOf("install_script.iss") != -1) {
-            ui->extracted->setText(ui->total->text());
-            ui->progress->setValue(ui->progress->maximum());
-        }
-        else {
-            QString temp = temp_Output.mid(temp_Output.indexOf("#") + 1, temp_Output.indexOf(" {") - 1);
-            ui->extracted->setText(temp);
-            ui->progress->setValue(temp.toInt());
-        }
+        QString temp = temp_Output.mid(temp_Output.indexOf("#") + 1, temp_Output.indexOf(" ") - 1);
+        ui->extracted->setText(temp);
+        ui->progress->setValue(temp.toInt());
 
     }
 }
@@ -116,7 +113,7 @@ void Widget::on_start_clicked()
     runCmd(cmd, false);
 
     //start install
-    cmd = "\"" + innounpPath + "\" -x -d\"" + gameSetupPath + "\\\" -a \"" + setupPath + "\"";
+    cmd = "\"" + innounpPath + "\" -x -d\"" + gamePath + "\" -a -y \"" + setupPath + "\"";
     runCmd(cmd, true);
 }
 
