@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QDir>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -23,8 +24,6 @@ public:
     ~Widget();
 
 private slots:
-    void on_setInnounpPath_clicked();
-
     void on_setSetupPath_clicked();
 
     void on_setGamePath_clicked();
@@ -38,9 +37,13 @@ private:
 
     QString innounpPath;
     QString setupPath;
-    QString gamePath;
+    QString gamePath, gamePath_upLv;
+    QString dirName;
+    QString cmd;
 
     int files;
+
+    bool isStart;
 
     //統一命令編碼
     QTextCodec *codec = QTextCodec::codecForName("Big5");
@@ -48,6 +51,8 @@ private:
 
     QProcess *process;
 
-    void runCmd(QString, bool);
+    void runCmd(QString, int);
+
+    void warningMsg(QString);
 };
 #endif // WIDGET_H
