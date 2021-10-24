@@ -35,13 +35,14 @@ private slots:
 private:
     Ui::Widget *ui;
 
-    QString innounpPath;
+    QString toolPath;
     QString setupPath;
     QString gamePath, gamePath_upLv;
     QString dirName;
     QString cmd;
 
     int files;
+    int slices;
 
     bool isStart;
 

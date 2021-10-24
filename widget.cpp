@@ -12,7 +12,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
 
     QFile innounp(qApp->applicationDirPath() + "/innounp.exe");
     if(innounp.exists()) {
-        innounpPath = innounp.fileName().replace("/","\\");
+        toolPath = innounp.fileName().replace("/","\\");
     }
     else {
         warningMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
@@ -35,7 +35,7 @@ void Widget::on_setSetupPath_clicked() {
 
     if(!temp.isEmpty()) {
         setupPath = temp.replace("/","\\");
-        cmd = "\"" + innounpPath + "\" \"" + setupPath + "\"";
+        cmd = "\"" + toolPath + "\" \"" + setupPath + "\"";
         runCmd(cmd, 1);
     }
     else {
@@ -196,7 +196,7 @@ void Widget::realTimeReadOut() {
 //開始安裝
 void Widget::on_start_clicked() {
     if(!setupPath.isEmpty() && !gamePath.isEmpty()) {
-        cmd = "\"" + innounpPath + "\" -x -d\"" + gamePath_upLv + "\" -a -y \"" + setupPath + "\"";
+        cmd = "\"" + toolPath + "\" -x -d\"" + gamePath_upLv + "\" -a -y \"" + setupPath + "\"";
         ui->setSetupPath->setEnabled(false);
         ui->setGamePath->setEnabled(false);
         ui->start->setEnabled(false);
