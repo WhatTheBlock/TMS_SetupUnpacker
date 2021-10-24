@@ -35,6 +35,8 @@ private slots:
 private:
     Ui::Widget *ui;
 
+    QFile innounp;
+
     QString toolPath;
     QString setupPath;
     QString gamePath, gamePath_upLv;

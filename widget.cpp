@@ -10,7 +10,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
 
     isStart = false;
 
-    QFile innounp(qApp->applicationDirPath() + "/innounp.exe");
+    innounp.setFileName(qApp->applicationDirPath() + "/innounp.exe");
     if(innounp.exists()) {
         toolPath = innounp.fileName().replace("/","\\");
     }
@@ -128,18 +128,18 @@ void Widget::runCmd(QString cmd, int mode) {
         [=](int exitCode, QProcess::ExitStatus exitStatus)
         {
             switch (mode) {
-            case 1: //驗證安裝檔並取得檔案數量
+            case 1: //驗證安裝檔
                 {
                     QString text = ui->cmdOutput->toPlainText();
                     ui->cmdOutput->clear();
 
                     if(text.indexOf("Files: ") != -1) {
-                        //支援的遊戲檔案數量為100~9999 (64bit客戶端若檔案拆分的很徹底將有可能超過9999)
+                        //支援的遊戲檔案數量為100~9999 (若超出範圍請自行修改或通知我更新)
                         text = text.mid(text.indexOf("Files: ") + 7, 4).replace(" ", "");
                         ui->extracted->setText("0");
                         ui->total->setText(text);
                         ui->progress->setMaximum(text.toInt());
-                        ui->setSetupPath->setText(setupPath);
+                        ui->setSetupPath->setText(setupPath);                        
                     }
                     else {
                         warningMsg(QStringLiteral("錯誤的安裝檔，請重新選擇。"));
@@ -195,13 +195,20 @@ void Widget::realTimeReadOut() {
 
 //開始安裝
 void Widget::on_start_clicked() {
+    //確保安裝檔與安裝路徑均設定
     if(!setupPath.isEmpty() && !gamePath.isEmpty()) {
-        cmd = "\"" + toolPath + "\" -x -d\"" + gamePath_upLv + "\" -a -y \"" + setupPath + "\"";
-        ui->setSetupPath->setEnabled(false);
-        ui->setGamePath->setEnabled(false);
-        ui->start->setEnabled(false);
-        isStart = true;
-        runCmd(cmd, 2);
+        //避免安裝前因移動innounp造成錯誤
+        if(innounp.exists()) {
+            cmd = "\"" + toolPath + "\" -x -d\"" + gamePath_upLv + "\" -a -y \"" + setupPath + "\"";
+            ui->setSetupPath->setEnabled(false);
+            ui->setGamePath->setEnabled(false);
+            ui->start->setEnabled(false);
+            isStart = true;
+            runCmd(cmd, 2);
+        }
+        else {
+            warningMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
+        }
     }
     else {
         warningMsg(QStringLiteral("請檢查安裝檔與安裝路徑是否均設定。"));
