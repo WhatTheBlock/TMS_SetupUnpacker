@@ -57,5 +57,7 @@ private:
     void runCmd(QString, int);
 
     void warningMsg(QString);
+
+    void checkSlices();
 };
 #endif // WIDGET_H

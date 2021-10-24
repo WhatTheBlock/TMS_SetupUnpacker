@@ -133,14 +133,20 @@ void Widget::runCmd(QString cmd, int mode) {
                     QString text = ui->cmdOutput->toPlainText();
                     ui->cmdOutput->clear();
 
+                    //正確的安裝檔
                     if(text.indexOf("Files: ") != -1) {
+                        slices = text.midRef(text.indexOf("slices: ") + 8, 2).toInt();
+
                         //支援的遊戲檔案數量為100~9999 (若超出範圍請自行修改或通知我更新)
                         text = text.mid(text.indexOf("Files: ") + 7, 4).replace(" ", "");
-                        ui->extracted->setText("0");
                         ui->total->setText(text);
                         ui->progress->setMaximum(text.toInt());
-                        ui->setSetupPath->setText(setupPath);                        
+                        ui->setSetupPath->setText(setupPath);
+
+                        //檢查分割檔是否完整
+                        checkSlices();
                     }
+                    //錯誤的安裝檔
                     else {
                         warningMsg(QStringLiteral("錯誤的安裝檔，請重新選擇。"));
                         setupPath.clear();
@@ -189,6 +195,20 @@ void Widget::realTimeReadOut() {
         }
         else if(temp_Output.indexOf("; Version") != -1) {
             ui->cmdOutput->clear();
+        }
+    }
+}
+
+//檢查分割檔是否完整
+void Widget::checkSlices() {
+    for (int i = 1; i <= slices; i++) {
+        if(!QFile::exists(setupPath.chopped(4).append("-%1").arg(i).append(".bin"))) {
+            warningMsg(QStringLiteral("請檢查安裝分割檔(*.bin)是否有%1個，\n"
+                                      "並勿擅自更改檔名或移動檔案。").arg(slices));
+            setupPath.clear();
+            ui->total->setText("0");
+            ui->setSetupPath->setText(QStringLiteral("遊戲安裝檔的路徑尚未設定"));
+            break;
         }
     }
 }
