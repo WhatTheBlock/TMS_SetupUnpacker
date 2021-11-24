@@ -103,9 +103,6 @@ void Widget::realTimeReadOut() {
     */
     //QString temp_Error = QString::fromLocal8Bit(p -> readAllStandardError());
 
-    //qDebug() << temp_Output;
-    //qDebug() << temp_Error;
-
     ui->cmdOutput->append(temp_Output);
 
     if(isStart) {
@@ -124,35 +121,23 @@ void Widget::realTimeReadOut() {
 void Widget::processError(QProcess::ProcessError error) {
     switch (error) {
     case QProcess::FailedToStart:
-        {
-            errorMsg(QStringLiteral("innounp啟動失敗，請重試。"));
-        }
+        errorMsg(QStringLiteral("innounp啟動失敗，請重試。"));
         break;
     case QProcess::Crashed:
-        {
-            errorMsg(QStringLiteral("innounp已崩潰，請確保有足夠的記憶體並重試。"));
-        }
+        errorMsg(QStringLiteral("innounp已崩潰，請確保有足夠的記憶體並重試。"));
         break;
     case QProcess::Timedout:
-        {
-            errorMsg(QStringLiteral("執行逾時，如發生此問題請回報\n"
+        errorMsg(QStringLiteral("執行逾時，如發生此問題請回報\n"
                                     "並附上工作管理員的效能狀態。"));
-        }
         break;
     case QProcess::WriteError:
-        {
-            errorMsg(QStringLiteral("寫入失敗，請重試。"));
-        }
+        errorMsg(QStringLiteral("寫入失敗，請重試。"));
         break;
     case QProcess::ReadError:
-        {
-            errorMsg(QStringLiteral("讀取失敗，請重試。"));
-        }
+        errorMsg(QStringLiteral("讀取失敗，請重試。"));
         break;
     case QProcess::UnknownError:
-        {
-            errorMsg(QStringLiteral("發生預期外的錯誤。"));
-        }
+        errorMsg(QStringLiteral("發生預期外的錯誤。"));
         break;
     }
 }
