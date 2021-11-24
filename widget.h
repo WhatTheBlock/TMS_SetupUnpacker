@@ -28,9 +28,11 @@ private slots:
 
     void on_setGamePath_clicked();
 
+    void on_start_clicked();
+
     void realTimeReadOut();
 
-    void on_start_clicked();
+    void processError(QProcess::ProcessError);
 
 private:
     Ui::Widget *ui;
@@ -57,6 +59,8 @@ private:
     void runCmd(QString, int);
 
     void warningMsg(QString);
+    void errorMsg(QString);
+    void infoMsg(QString);
 
     void checkSlices();
 };

@@ -5,8 +5,8 @@
 Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     QApplication::setStyle(QStyleFactory::create("Fusion")); //設定UI介面
     ui->setupUi(this);
-    ui->background->viewport()->setCursor(Qt::ArrowCursor); //設定TextEdit的鼠標為標準箭頭
-    ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor); //設定TextEdit的鼠標為標準箭頭
+    ui->background->viewport()->setCursor(Qt::ArrowCursor);  //設定TextEdit的鼠標為標準箭頭
+    ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor);   //設定TextEdit的鼠標為標準箭頭
 
     isStart = false;
 
@@ -15,18 +15,13 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
         toolPath = innounp.fileName().replace("/","\\");
     }
     else {
-        warningMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
+        errorMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
         exit(EXIT_FAILURE);
     }
 }
 
 Widget::~Widget() {
     delete ui;
-}
-
-//提醒訊息
-void Widget::warningMsg(QString msg) {
-    QMessageBox::warning(this, QStringLiteral("注意！"), msg);
 }
 
 //設定遊戲安裝檔的路徑
@@ -36,6 +31,8 @@ void Widget::on_setSetupPath_clicked() {
     if(!temp.isEmpty()) {
         setupPath = temp.replace("/","\\");
         cmd = "\"" + toolPath + "\" \"" + setupPath + "\"";
+
+        //驗證安裝檔
         runCmd(cmd, 1);
     }
     else {
@@ -113,106 +110,6 @@ void Widget::on_setGamePath_clicked() {
     }
 }
 
-//執行指令
-void Widget::runCmd(QString cmd, int mode) {
-    ui->cmdOutput->clear();
-    cmd += "\n\r";
-    encodedString = codec->fromUnicode(cmd);
-
-    process = new QProcess(this);
-    process->start("cmd");
-    process->write(encodedString.data());
-    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(realTimeReadOut()));
-    //connect(process, SIGNAL(readyReadStandardError()), this, SLOT(realTimeReadOut()));
-    connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-        [=](int exitCode, QProcess::ExitStatus exitStatus)
-        {
-            switch (mode) {
-            case 1: //驗證安裝檔
-                {
-                    QString text = ui->cmdOutput->toPlainText();
-                    ui->cmdOutput->clear();
-
-                    //正確的安裝檔
-                    if(text.indexOf("Files: ") != -1) {
-                        slices = text.midRef(text.indexOf("slices: ") + 8, 2).toInt();
-
-                        //支援的遊戲檔案數量為100~9999 (若超出範圍請自行修改或通知我更新)
-                        text = text.mid(text.indexOf("Files: ") + 7, 4).replace(" ", "");
-                        ui->total->setText(text);
-                        ui->progress->setMaximum(text.toInt());
-                        ui->setSetupPath->setText(setupPath);
-
-                        //檢查分割檔是否完整
-                        checkSlices();
-                    }
-                    //錯誤的安裝檔
-                    else {
-                        warningMsg(QStringLiteral("錯誤的安裝檔，請重新選擇。"));
-                        setupPath.clear();
-                        ui->setSetupPath->setText(QStringLiteral("遊戲安裝檔的路徑尚未設定"));
-                    }
-                }
-                break;
-            case 2: //遊戲安裝結束後
-                {
-                    isStart = false;
-                    ui->cmdOutput->clear();
-                    ui->setSetupPath->setEnabled(true);
-                    ui->setGamePath->setEnabled(true);
-                    ui->start->setEnabled(true);
-
-                    QDir *dir = new QDir(gamePath_upLv + "{tmp}");
-                    dir->removeRecursively();
-                    dir->setPath(gamePath);
-                    dir->removeRecursively();
-                    dir->rename(gamePath_upLv + "{app}", gamePath_upLv + dirName);
-                    QFile iss(gamePath_upLv + "install_script.iss");
-                    iss.remove();
-                }
-                break;
-            }
-        });
-
-    process->write("exit\n\r");
-}
-
-//輸出執行過程
-void Widget::realTimeReadOut() {
-    QProcess *p = dynamic_cast<QProcess *>(sender());
-    QString temp_Output = QString::fromLocal8Bit(p->readAllStandardOutput());
-    //QString temp_Error = QString::fromLocal8Bit(p->readAllStandardError());
-    //qDebug() << temp_Output;
-
-    ui->cmdOutput->append(temp_Output);
-    //ui->cmdOutput->append(temp_Error);
-
-    if(isStart) {
-        if(temp_Output.indexOf("#") != -1) {
-            QString temp = temp_Output.mid(temp_Output.indexOf("#") + 1, temp_Output.indexOf(" ") - 1);
-            ui->extracted->setText(temp);
-            ui->progress->setValue(temp.toInt());
-        }
-        else if(temp_Output.indexOf("; Version") != -1) {
-            ui->cmdOutput->clear();
-        }
-    }
-}
-
-//檢查分割檔是否完整
-void Widget::checkSlices() {
-    for (int i = 1; i <= slices; i++) {
-        if(!QFile::exists(setupPath.chopped(4).append("-%1").arg(i).append(".bin"))) {
-            warningMsg(QStringLiteral("請檢查安裝分割檔(*.bin)是否有%1個，\n"
-                                      "並勿擅自更改檔名或移動檔案。").arg(slices));
-            setupPath.clear();
-            ui->total->setText("0");
-            ui->setSetupPath->setText(QStringLiteral("遊戲安裝檔的路徑尚未設定"));
-            break;
-        }
-    }
-}
-
 //開始安裝
 void Widget::on_start_clicked() {
     //確保安裝檔與安裝路徑均設定
@@ -224,14 +121,15 @@ void Widget::on_start_clicked() {
             ui->setGamePath->setEnabled(false);
             ui->start->setEnabled(false);
             isStart = true;
+
+            //開始安裝
             runCmd(cmd, 2);
         }
         else {
-            warningMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
+            errorMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
         }
     }
     else {
         warningMsg(QStringLiteral("請檢查安裝檔與安裝路徑是否均設定。"));
     }
 }
-
