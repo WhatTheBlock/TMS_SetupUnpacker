@@ -9,6 +9,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor);   //設定TextEdit的鼠標為標準箭頭
 
     isStart = false;
+    isOT = false;
 
     innounp.setFileName(qApp->applicationDirPath() + "/innounp.exe");
     if(innounp.exists()) {
@@ -26,7 +27,7 @@ Widget::~Widget() {
 
 //設定遊戲安裝檔的路徑
 void Widget::on_setSetupPath_clicked() {
-    QString temp = QFileDialog::getOpenFileName(this, QStringLiteral("選擇安裝檔"), "/", "MapleStoryVxxx.exe (*.exe)");
+    QString temp = QFileDialog::getOpenFileName(this, QStringLiteral("選擇安裝檔"), "/", "MapleStoryVxxx.exe (MapleStoryV*.exe)");
 
     if(!temp.isEmpty()) {
         setupPath = temp.replace("/","\\");

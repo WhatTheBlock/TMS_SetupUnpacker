@@ -35,6 +35,9 @@ void Widget::runCmd(QString cmd, int mode) {
 
                         //檢查分割檔是否完整
                         checkSlices();
+
+                        //是否為測試服
+                        isOT = (setupPath.right(6).mid(0,2) == "OT")?true:false;
                     }
                     //錯誤的安裝檔
                     else {
@@ -80,9 +83,19 @@ void Widget::runCmd(QString cmd, int mode) {
                         dir->rename(gamePath_upLv + "{app}", gamePath_upLv + dirName);
                         iss.remove();
 
+                        //設定安裝路徑讓Beanfun可直接偵測到遊戲
+                        if(!isOT) {
+                            QSettings registryPath("HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\GAMANIA\\MAPLESTORY", QSettings::NativeFormat);
+                            registryPath.setValue("Path", gamePath.chopped(1));
+                        }
+                        else {
+                            QSettings registryPath("HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\GAMANIA\\MapleStory_TestServer", QSettings::NativeFormat);
+                            registryPath.setValue("Path", gamePath.chopped(1));
+                        }
+
                         infoMsg(QStringLiteral("安裝完畢！接下來請按照不同的登入方式操作：\n\n"
                                                   "1. 第三方登入器設定【%1MapleStory.exe】路徑後即可啟動遊戲\n\n"
-                                                  "2. Beanfun請在顯示無法偵測安裝狀態時點選 [確認安裝]，"
+                                                  "2. Beanfun若顯示無法偵測安裝狀態請點選 [確認安裝]，"
                                                   "並設定【%1MapleStory.exe】的路徑，重新整理網頁後即可啟動遊戲").arg(gamePath));
                     }
                 }

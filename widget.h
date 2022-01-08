@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QDir>
 #include <QMessageBox>
+#include <QSettings>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -49,6 +50,7 @@ private:
     int slices;
 
     bool isStart;
+    bool isOT;
 
     //統一命令編碼
     QTextCodec *codec = QTextCodec::codecForName("Big5");
