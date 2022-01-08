@@ -9,7 +9,6 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor);   //設定TextEdit的鼠標為標準箭頭
 
     isStart = false;
-    isOT = false;
 
     innounp.setFileName(qApp->applicationDirPath() + "/innounp.exe");
     if(innounp.exists()) {
