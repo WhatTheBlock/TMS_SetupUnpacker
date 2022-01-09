@@ -55,12 +55,13 @@ void Widget::runCmd(QString cmd, int mode) {
                     isStart = false;
                     ui->setSetupPath->setEnabled(true);
                     ui->setGamePath->setEnabled(true);
-                    ui->extracted->setText("0");
                     ui->progress->setValue(0);
                     ui->start->setEnabled(true);
 
                     //安裝失敗
                     if(ui->extracted->text() != ui->total->text()) {
+                        ui->extracted->setText("0");
+
                         //移除安裝不完全的遊戲檔案
                         dir->removeRecursively();
                         dir->setPath(gamePath_upLv + "{app}");
