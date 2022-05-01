@@ -47,7 +47,6 @@ private:
     QString cmd;
 
     int files;
-    int slices;
 
     bool isStart;
     bool isOT;
@@ -66,6 +65,7 @@ private:
     void errorMsg(QString);
     void infoMsg(QString);
 
-    void checkSlices();
+    void checkSlices(QString);
+    void setTotalFiles(QString);
 };
 #endif // WIDGET_H

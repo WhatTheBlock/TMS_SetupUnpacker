@@ -17,7 +17,9 @@ void Widget::infoMsg(QString msg) {
 }
 
 //檢查分割檔是否完整
-void Widget::checkSlices() {
+void Widget::checkSlices(QString text) {
+    int slices = text.midRef(text.indexOf("slices: ") + 8, 2).toInt();
+
     for (int i = 1; i <= slices; i++) {
         if(!QFile::exists(setupPath.chopped(4).append("-%1").arg(i).append(".bin"))) {
             warningMsg(QStringLiteral("請檢查安裝分割檔(*.bin)是否有%1個，\n"
@@ -28,4 +30,12 @@ void Widget::checkSlices() {
             break;
         }
     }
+}
+
+//取得遊戲檔案數量
+void Widget::setTotalFiles(QString text) {
+    //支援的遊戲檔案數量為100~9999 (若超出範圍請自行修改或通知我更新)
+    ui->total->setText(text.mid(text.indexOf("Files: ") + 7, 4).replace(" ", ""));
+    ui->progress->setMaximum(ui->total->text().toInt());
+    ui->setSetupPath->setText(setupPath);
 }

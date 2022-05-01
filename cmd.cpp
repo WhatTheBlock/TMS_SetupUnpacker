@@ -74,24 +74,16 @@ void Widget::verifyInstaller() {
     QString text = ui->cmdOutput->toPlainText();
     ui->cmdOutput->clear();
 
-    //正確的安裝檔
     if(text.indexOf("Files: ") != -1) {
-        //取得正確的檔案分割數
-        slices = text.midRef(text.indexOf("slices: ") + 8, 2).toInt();
-
-        //支援的遊戲檔案數量為100~9999 (若超出範圍請自行修改或通知我更新)
-        text = text.mid(text.indexOf("Files: ") + 7, 4).replace(" ", "");
-        ui->total->setText(text);
-        ui->progress->setMaximum(text.toInt());
-        ui->setSetupPath->setText(setupPath);
+        //取得遊戲檔案數量
+        setTotalFiles(text);
 
         //檢查分割檔是否完整
-        checkSlices();
+        checkSlices(text);
 
         //是否為測試服
         isOT = (setupPath.right(6).mid(0,2) == "OT")?true:false;
     }
-    //錯誤的安裝檔
     else {
         warningMsg(QStringLiteral("錯誤的安裝檔，請重新選擇。"));
         setupPath.clear();
