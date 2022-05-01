@@ -44,9 +44,7 @@ void Widget::on_setSetupPath_clicked() {
 
 //設定遊戲安裝的路徑
 void Widget::on_setGamePath_clicked() {
-    QDir dirTmp;
-    QDir dirApp;
-    QDir dirGame;
+    QDir dirTmp, dirApp, dirGame;
     QFile iss;
     QString temp = QFileDialog::getExistingDirectory(this, QStringLiteral("選擇遊戲安裝的路徑"), "/", QFileDialog::ShowDirsOnly);
 
@@ -66,14 +64,12 @@ void Widget::on_setGamePath_clicked() {
             }
             else {
                 warningMsg(QStringLiteral("安裝路徑的上層不可含有{tmp}、{app}目錄\n與install_script.iss檔案。"));
-                gamePath.clear();
-                ui->setGamePath->setText(QStringLiteral("遊戲安裝的路徑尚未設定"));
+                clearGamePath();
             }
         }
         else {
             warningMsg(QStringLiteral("%1目錄下不可包含檔案").arg(dirGame.path().replace("/","\\")));
-            gamePath.clear();
-            ui->setGamePath->setText(QStringLiteral("遊戲安裝的路徑尚未設定"));
+            clearGamePath();
         }
     }
     //安裝路徑設定根目錄則自動加上MapleStory
@@ -93,20 +89,17 @@ void Widget::on_setGamePath_clicked() {
             }
             else {
                 warningMsg(QStringLiteral("根目錄不可含有{tmp}、{app}目錄\n與install_script.iss檔案。"));
-                gamePath.clear();
-                ui->setGamePath->setText(QStringLiteral("遊戲安裝的路徑尚未設定"));
+                clearGamePath();
             }
         }
         else {
             warningMsg(QStringLiteral("%1必須為空或不存在").arg(dirGame.path().replace("/","\\")));
-            gamePath.clear();
-            ui->setGamePath->setText(QStringLiteral("遊戲安裝的路徑尚未設定"));
+            clearGamePath();
         }
     }
     else {
         warningMsg(QStringLiteral("未選擇遊戲安裝的路徑！"));
-        gamePath.clear();
-        ui->setGamePath->setText(QStringLiteral("遊戲安裝的路徑尚未設定"));
+        clearGamePath();
     }
 }
 

@@ -65,5 +65,6 @@ private:
 
     void checkSlices(QString);
     void setTotalFiles(QString);
+    void clearGamePath();
 };
 #endif // WIDGET_H

@@ -39,3 +39,9 @@ void Widget::setTotalFiles(QString text) {
     ui->progress->setMaximum(ui->total->text().toInt());
     ui->setSetupPath->setText(setupPath);
 }
+
+//清除錯誤的路徑
+void Widget::clearGamePath() {
+    gamePath.clear();
+    ui->setGamePath->setText(QStringLiteral("遊戲安裝的路徑尚未設定"));
+}
