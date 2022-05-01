@@ -33,8 +33,6 @@ private slots:
 
     void realTimeReadOut();
 
-    //void processError(QProcess::ProcessError);
-
 private:
     Ui::Widget *ui;
 

@@ -11,7 +11,6 @@ void Widget::runCmd(QString cmd, int mode) {
     process->start("cmd");
     process->write(encodedString.data());
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(realTimeReadOut()));
-    //connect(process, &QProcess::errorOccurred, this, &Widget::processError);
     connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, [=]() {
             switch (mode) {
             case 1: //驗證安裝檔
@@ -43,33 +42,6 @@ void Widget::realTimeReadOut() {
         }
     }
 }
-
-/*
-//捕獲錯誤訊息 (這種錯誤幾乎不會遇到，先放置OuO)
-void Widget::processError(QProcess::ProcessError error) {
-    switch (error) {
-    case QProcess::FailedToStart:
-        errorMsg(QStringLiteral("innounp啟動失敗，請重試。"));
-        break;
-    case QProcess::Crashed:
-        errorMsg(QStringLiteral("innounp已崩潰，請確保有足夠的記憶體並重試。"));
-        break;
-    case QProcess::Timedout:
-        errorMsg(QStringLiteral("執行逾時，如發生此問題請回報\n"
-                                    "並附上工作管理員的效能狀態。"));
-        break;
-    case QProcess::WriteError:
-        errorMsg(QStringLiteral("寫入失敗，請重試。"));
-        break;
-    case QProcess::ReadError:
-        errorMsg(QStringLiteral("讀取失敗，請重試。"));
-        break;
-    case QProcess::UnknownError:
-        errorMsg(QStringLiteral("發生預期外的錯誤。"));
-        break;
-    }
-}
-*/
 
 //驗證安裝檔
 void Widget::verifyInstaller() {

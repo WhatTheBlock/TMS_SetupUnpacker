@@ -125,11 +125,7 @@ void Widget::on_start_clicked() {
             //開始安裝
             runCmd(cmd, 2);
         }
-        else {
-            errorMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
-        }
+        else errorMsg(QStringLiteral("未偵測到innounp.exe，請勿擅自更改檔名或移動檔案。"));
     }
-    else {
-        warningMsg(QStringLiteral("請檢查安裝檔與安裝路徑是否均設定。"));
-    }
+    else warningMsg(QStringLiteral("請檢查安裝檔與安裝路徑是否均設定。"));
 }
