@@ -12,15 +12,8 @@ void Widget::runCmd(QString cmd, int mode) {
     process->write(encodedString.data());
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(realTimeReadOut()));
     connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, [=]() {
-            switch (mode) {
-            case 1: //驗證安裝檔
-                verifyInstaller();
-                break;
-            case 2: //遊戲安裝結束後
-                afterInstallation();
-                break;
-            }
-        });
+        (mode == 1)?verifyInstaller():afterInstallation();
+    });
     process->write("exit\n\r");
 }
 
