@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QSettings>
+#include "static_value.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }

@@ -15,6 +15,7 @@ SOURCES += \
     widget.cpp
 
 HEADERS += \
+    static_value.h \
     widget.h
 
 FORMS += \

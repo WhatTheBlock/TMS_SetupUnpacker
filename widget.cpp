@@ -5,8 +5,9 @@
 Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     QApplication::setStyle(QStyleFactory::create("Fusion")); //設定UI介面
     ui->setupUi(this);
-    ui->background->viewport()->setCursor(Qt::ArrowCursor);  //設定TextEdit的鼠標為標準箭頭
-    ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor);   //設定TextEdit的鼠標為標準箭頭
+    //設定TextEdit的鼠標為標準箭頭
+    ui->background->viewport()->setCursor(Qt::ArrowCursor);
+    ui->cmdOutput->viewport()->setCursor(Qt::ArrowCursor);
 
     isStart = false;
 

@@ -93,14 +93,8 @@ void Widget::afterInstallation() {
         iss.remove();
 
         //設定安裝路徑讓Beanfun可直接偵測到遊戲
-        if(!isOT) {
-            QSettings registryPath("HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\GAMANIA\\MAPLESTORY", QSettings::NativeFormat);
-            registryPath.setValue("Path", gamePath.chopped(1));
-        }
-        else {
-            QSettings registryPath("HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\GAMANIA\\MapleStory_TestServer", QSettings::NativeFormat);
-            registryPath.setValue("Path", gamePath.chopped(1));
-        }
+        (!isOT)?QSettings(REGPATH, QSettings::NativeFormat).setValue("Path", gamePath.chopped(1)):
+                QSettings(REGPATH_OT, QSettings::NativeFormat).setValue("Path", gamePath.chopped(1));
 
         infoMsg(QStringLiteral("安裝完畢！接下來請按照不同的登入方式操作：\n\n"
                                   "1. 第三方登入器設定【%1MapleStory.exe】路徑後即可啟動遊戲\n\n"
