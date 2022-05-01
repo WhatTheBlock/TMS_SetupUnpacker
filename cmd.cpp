@@ -11,7 +11,7 @@ void Widget::runCmd(QString cmd, int mode) {
     process->start("cmd");
     process->write(encodedString.data());
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(realTimeReadOut()));
-    connect(process, &QProcess::errorOccurred, this, &Widget::processError);
+    //connect(process, &QProcess::errorOccurred, this, &Widget::processError);
     connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, [=]() {
             switch (mode) {
             case 1: //驗證安裝檔
@@ -44,7 +44,8 @@ void Widget::realTimeReadOut() {
     }
 }
 
-//捕獲錯誤訊息
+/*
+//捕獲錯誤訊息 (這種錯誤幾乎不會遇到，先放置OuO)
 void Widget::processError(QProcess::ProcessError error) {
     switch (error) {
     case QProcess::FailedToStart:
@@ -68,6 +69,7 @@ void Widget::processError(QProcess::ProcessError error) {
         break;
     }
 }
+*/
 
 //驗證安裝檔
 void Widget::verifyInstaller() {
