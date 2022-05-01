@@ -59,6 +59,8 @@ private:
     QProcess *process;
 
     void runCmd(QString, int);
+    void verifyInstaller();
+    void afterInstallation();
 
     void warningMsg(QString);
     void errorMsg(QString);
