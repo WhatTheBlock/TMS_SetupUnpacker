@@ -11,11 +11,8 @@ void Widget::runCmd(QString cmd, int mode) {
     process->start("cmd");
     process->write(encodedString.data());
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(realTimeReadOut()));
-    //connect(process, SIGNAL(readyReadStandardError()), this, SLOT(realTimeReadOut()));
     connect(process, &QProcess::errorOccurred, this, &Widget::processError);
-    connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-        [=](int exitCode, QProcess::ExitStatus exitStatus)
-        {
+    connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this, [=]() {
             switch (mode) {
             case 1: //驗證安裝檔
                 {
@@ -67,11 +64,8 @@ void Widget::runCmd(QString cmd, int mode) {
                         dir->setPath(gamePath_upLv + "{app}");
                         dir->removeRecursively();
 
-                        //exitCode & exitStatus seems useless
                         errorMsg(QStringLiteral("安裝失敗，殘餘的遊戲檔案已移除，\n"
-                                                "回報錯誤時請提供含有Exception字樣的畫面截圖。\n\n"
-                                                "exitCode: %1\n"
-                                                "exitStatus: %2").arg(exitCode).arg(exitStatus));
+                                                "回報錯誤時請提供含有Exception字樣的畫面截圖。"));
                     }
                     //安裝成功
                     else {
@@ -111,11 +105,6 @@ void Widget::runCmd(QString cmd, int mode) {
 void Widget::realTimeReadOut() {
     QProcess *p = dynamic_cast<QProcess *>(sender());
     QString temp_Output = QString::fromLocal8Bit(p -> readAllStandardOutput());
-    /*
-    * innounp找不到分割檔的錯誤仍然輸出在readAllStandardOutput()
-    * 檔案損毀的錯誤若也確定不是輸出在readAllStandardError()將會正式移除
-    */
-    //QString temp_Error = QString::fromLocal8Bit(p -> readAllStandardError());
 
     ui->cmdOutput->append(temp_Output);
 
